@@ -34,13 +34,15 @@ const AuthForm = () => {
             />
             <div>Expense Tracker</div>
           </div>
-          <Auth
-            redirectTo={`${window.location.origin}/auth/callback`}
-            supabaseClient={supabase}
-            appearance={{ theme: ThemeSupa }}
-            providers={["google"]}
-            onlyThirdPartyProviders={true}
-          />
+          {typeof window !== "undefined" && (
+            <Auth
+              redirectTo={`${window.location.origin}/auth/callback`}
+              supabaseClient={supabase}
+              appearance={{ theme: ThemeSupa }}
+              providers={["google"]}
+              onlyThirdPartyProviders={true}
+            />
+          )}
         </div>
       </div>
     </div>
