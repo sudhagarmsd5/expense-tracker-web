@@ -1,29 +1,23 @@
-import { NextResponse, type NextRequest } from "next/server";
-import { createSupabaseReqResClient } from "./app/lib/supabase/server-client";
+import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function middleware(request: NextRequest) {
-  let response = NextResponse.next({
-    request: {
-      headers: request.headers,
-    },
-  });
+export async function middleware(req: NextRequest) {
+  const res = NextResponse.next();
+  const supabase = createMiddlewareClient({ req, res });
+  const { data } = await supabase.auth.getSession();
 
-  const supabase = createSupabaseReqResClient(request, response);
-
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  const user = session?.user;
-
-  // protects the "/transactions","/dashboard" route and its sub-routes
-  if (!user && (request.nextUrl.pathname.startsWith("/transactions") || request.nextUrl.pathname.startsWith("/dashboard"))) {
-    return NextResponse.redirect(new URL("/", request.url));
+  if (data?.session && req.nextUrl.pathname.startsWith("/auth")) {
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
-  return response;
-}
+  // Must be a session to see these routes
+  if (
+    !data?.session &&
+    (req.nextUrl.pathname.startsWith("/dashboard") ||
+      req.nextUrl.pathname.startsWith("/transactions"))
+  ) {
+    return NextResponse.redirect(new URL("/auth", req.url));
+  }
 
-export const config = {
-  matcher: ["/","/dashboard", "/transactions"],
-};
+  return res;
+}
