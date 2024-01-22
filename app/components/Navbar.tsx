@@ -66,7 +66,7 @@ const Navbar = () => {
       >
        
           <Image
-            src={avatar_url || ""}
+            src={avatar_url || "/user.png"}
             alt={"profile image"}
             width={100}
             height={24}
