@@ -212,47 +212,47 @@ console.log(transactions);
   const columns = [
     {
       name: "Transaction Type",
-      selector: (row) => row.transaction_type,
+      selector: (row:any) => row.transaction_type,
       sortable: true,
     },
     {
       name: "Date",
-      selector: (row) => row.date,
+      selector: (row:any) => row.date,
       sortable: true,
     },
     {
       name: "Time",
-      selector: (row) => row.time,
+      selector: (row:any) => row.time,
       sortable: true,
     },
     {
       name: "Category ID",
-      selector: (row) => row.category_id,
+      selector: (row:any) => row.category_id,
       sortable: true,
     },
     {
       name: "Category Name",
-      selector: (row) => row.category_name,
+      selector: (row:any) => row.category_name,
       sortable: true,
     },
     {
       name: "Amount",
-      selector: (row) => row.amount,
+      selector: (row:any) => row.amount,
       sortable: true,
     },
     {
       name: "Description",
-      selector: (row) => row.description,
+      selector: (row:any) => row.description,
       sortable: true,
     },
     {
       name: "Payment Mode",
-      selector: (row) => row.payment_mode,
+      selector: (row:any) => row.payment_mode,
       sortable: true,
     },
     {
       name: "User ID",
-      selector: (row) => row.user_id,
+      selector: (row:any) => row.user_id,
       sortable: true,
     },
   ];
