@@ -9,15 +9,18 @@ import useTransaction from "./useTransaction";
 import DataTable from "react-data-table-component";
 import { useAppDispatch, useAppSelector } from "@/app/lib/state/redux/store";
 import {
+  deleteTransactions,
   fetchTransactions,
   selectTransactions,
 } from "@/app/lib/state/redux/reducer/transactions";
+import { ITransaction } from "@/app/lib/types";
+import { useIsGtMd } from "@/app/lib/hooks/useMediaQuery";
 
 const Transactions = () => {
   const dispatch = useAppDispatch();
   const transactions = useAppSelector(selectTransactions).transactions;
 
-  const { userSession, setUserUserSession } = useZustandStore()
+  const { userSession, setUserUserSession } = useZustandStore();
   const router = useRouter();
   useEffect(() => {
     if (userSession) {
@@ -26,11 +29,13 @@ const Transactions = () => {
   }, [userSession]);
 
   useEffect(() => {
-console.log(transactions);
-
-  }, [transactions])
+    console.log(transactions);
+  }, [transactions]);
+  const [dialogType, setDialogType] = React.useState<number>();
+  const [selectedData, setSelectedData] = React.useState<ITransaction[]>([]);
+  const [toggledClearRows, setToggleClearRows] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
   
-
   const {
     register,
     handleSubmit,
@@ -39,7 +44,9 @@ console.log(transactions);
     onSubmit,
     categoryOptions,
     setCategoryOptions,
-  } = useTransaction();
+    getValues,
+    reset,
+  } = useTransaction({ dialogType, selectedData,setToggleClearRows,setOpen });
 
   useEffect(() => {
     supabase.auth.getSession().then((res) => {
@@ -52,9 +59,41 @@ console.log(transactions);
   }, [supabase]);
 
   function openAddTransactionDialog() {
+    reset();
+    setDialogType(0);
+    setValue("transaction_type", "income");
     setOpen(!open);
   }
-  const [open, setOpen] = React.useState(false);
+
+  function openEditTransactionDialog() {
+    setDialogType(1);
+    Object.entries(selectedData[0]).forEach(([name, value]: any) =>
+      setValue(name, value)
+    );
+    let transactionCategory = {
+      category_id: selectedData[0].category_id,
+      category_name: selectedData[0].category_name,
+    };
+    setTimeout(() => {
+      setValue("transactionCategory", JSON.stringify(transactionCategory));
+    }, 50);
+    setOpen(!open);
+  }
+
+
+  const handleChange = (state: any) => {
+    setSelectedData(state.selectedRows);
+  };
+
+  const deleteTransaction = () => {
+    let ids = selectedData.map((transaction) => transaction.id);
+    let params = { id: ids, user_id: userSession?.user.id };
+    dispatch(deleteTransactions(params));
+  };
+
+  useEffect(() => {
+    console.log(selectedData);
+  }, [selectedData]);
 
   const TransactionForm = () => {
     return (
@@ -173,19 +212,33 @@ console.log(transactions);
             <label>Online Payment</label>
           </div>
         </div>
-        <button type="submit">add</button>
+        <button type="submit">{dialogType === 0 ? "Add" : "Update"}</button>
       </form>
     );
   };
 
+  const closedialog = () => {
+    console.log("dialog");
+    if (open) {
+      reset();
+    }
+  };
+
   const dialog = () => {
     return (
-      <Dialog.Root open={open} onOpenChange={setOpen}>
+      <Dialog.Root
+        open={open}
+        onOpenChange={() => {
+          setOpen(!open);
+          closedialog();
+        }}
+      >
         <Dialog.Portal>
           <Dialog.Overlay className="bg-blackA6 data-[state=open]:animate-overlayShow fixed inset-0" />
           <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
             <Dialog.Title className="text-mauve12 m-0 text-[17px] font-medium">
-              Add Transaction
+              {dialogType === 0 ? "Add" : "Update"}
+              Transaction
             </Dialog.Title>
             <Dialog.Close asChild>
               <button
@@ -212,60 +265,76 @@ console.log(transactions);
   const columns = [
     {
       name: "Transaction Type",
-      selector: (row:any) => row.transaction_type,
+      selector: (row: any) => row.transaction_type,
       sortable: true,
     },
     {
       name: "Date",
-      selector: (row:any) => row.date,
+      selector: (row: any) => row.date,
       sortable: true,
     },
     {
       name: "Time",
-      selector: (row:any) => row.time,
+      selector: (row: any) => row.time,
       sortable: true,
     },
     {
       name: "Category ID",
-      selector: (row:any) => row.category_id,
+      selector: (row: any) => row.category_id,
       sortable: true,
     },
     {
       name: "Category Name",
-      selector: (row:any) => row.category_name,
+      selector: (row: any) => row.category_name,
       sortable: true,
     },
     {
       name: "Amount",
-      selector: (row:any) => row.amount,
+      selector: (row: any) => row.amount,
       sortable: true,
     },
     {
       name: "Description",
-      selector: (row:any) => row.description,
+      selector: (row: any) => row.description,
       sortable: true,
     },
     {
       name: "Payment Mode",
-      selector: (row:any) => row.payment_mode,
+      selector: (row: any) => row.payment_mode,
       sortable: true,
     },
     {
       name: "User ID",
-      selector: (row:any) => row.user_id,
+      selector: (row: any) => row.user_id,
       sortable: true,
     },
   ];
+  const isGtMd = useIsGtMd();
 
   return (
-    <div>
+    <div className={isGtMd ? "ml-[200px]" : ""}>
       {open && dialog()}
-      <button onClick={openAddTransactionDialog}>add transaction</button>
+      <div className="space-x-5">
+        <button onClick={openAddTransactionDialog}>add transaction</button>
+        <button
+          disabled={selectedData?.length === 0 || selectedData?.length > 1}
+          onClick={openEditTransactionDialog}
+        >
+          edit transaction
+        </button>
+        <button
+          disabled={selectedData?.length === 0}
+          onClick={deleteTransaction}
+        >
+          delete transaction
+        </button>
+      </div>
       <DataTable
-        title="Movie List"
         columns={columns}
         data={transactions}
         selectableRows
+        onSelectedRowsChange={handleChange}
+        clearSelectedRows={toggledClearRows}
         pagination
       />
     </div>

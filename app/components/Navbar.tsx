@@ -64,14 +64,15 @@ const Navbar = () => {
             : "fixed top-0 left-[-100%] w-[300px] h-screen bg-white z-10 duration-500"
         }
       >
-       
-          <Image
-            src={avatar_url || "/user.png"}
-            alt={"profile image"}
-            width={100}
-            height={24}
-            priority
-          />
+        <Image
+          src={avatar_url || "/user.png"}
+          alt={"profile image"}
+          width={100}
+          height={24}
+          priority
+        />
+
+        {userSession?.user.user_metadata?.name}
 
         <AiOutlineClose
           onClick={() => setNav(!nav)}
