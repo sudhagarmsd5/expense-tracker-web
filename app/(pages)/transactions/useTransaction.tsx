@@ -1,23 +1,33 @@
-import { addTransactions } from "@/app/lib/state/redux/reducer/transactions";
+import {
+  addTransactions,
+  updateTransactions,
+} from "@/app/lib/state/redux/reducer/transactions";
 import { useAppDispatch } from "@/app/lib/state/redux/store";
 import { useZustandStore } from "@/app/lib/state/zustand";
 import { categories } from "@/app/lib/utils/data";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
-const useTransaction = () => {
+const useTransaction = ({
+  dialogType,
+  selectedData,
+  setToggleClearRows,
+  setOpen
+}: any) => {
   const {
     register,
     handleSubmit,
     setValue,
     watch,
+    reset,
+    getValues,
     formState: { errors },
   } = useForm();
 
-  const { userSession } = useZustandStore.getState();
+  const { userSession } = useZustandStore();
 
   useEffect(() => {
-    setValue("transaction_type", "expense");
+    // setValue("transaction_type", "expense");
   }, []);
 
   let [categoryOptions, setCategoryOptions] = useState<any>();
@@ -39,7 +49,7 @@ const useTransaction = () => {
   const dispatch = useAppDispatch();
 
   const onSubmit = (data: any) => {
-    console.log(data);
+    // console.log(data);
 
     let param = {
       transaction_type: data.transaction_type,
@@ -52,7 +62,19 @@ const useTransaction = () => {
       payment_mode: data.payment_mode,
       user_id: userSession?.user.id,
     };
-    dispatch(addTransactions(param))
+    console.log(param, "post");
+
+    if (dialogType === 0) {
+      dispatch(addTransactions(param));
+      setOpen(false)
+    } else if (dialogType === 1) {
+      let params = { ...param, id: selectedData[0].id };
+      dispatch(updateTransactions(params));
+      setToggleClearRows(true);
+      setOpen(false)
+    }
+
+    reset();
   };
 
   return {
@@ -63,6 +85,8 @@ const useTransaction = () => {
     onSubmit,
     categoryOptions,
     setCategoryOptions,
+    getValues,
+    reset,
   };
 };
 

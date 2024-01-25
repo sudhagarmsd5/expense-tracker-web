@@ -1,9 +1,11 @@
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import { transactionsReducer } from "./reducer/transactions";
+import { analyticsReducer } from "./reducer/analytics";
 export const store = configureStore({
   reducer: {
     transactions: transactionsReducer,
+    analytics:analyticsReducer
   },
 });
 

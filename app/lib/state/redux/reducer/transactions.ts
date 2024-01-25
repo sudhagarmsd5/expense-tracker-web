@@ -62,6 +62,34 @@ export const addTransactions = (params: any) => async (dispatch: any) => {
   }
 };
 
+export const updateTransactions = (params: any) => async (dispatch: any) => {
+  try {
+    await supabase
+      .from("expense_table_master")
+      .update(params)
+      .eq("id", params.id)
+      .then((res) => {
+        dispatch(fetchTransactions(params.user_id));
+      });
+  } catch (err: any) {
+    dispatch(error(err));
+  }
+};
+
+export const deleteTransactions = (params: any) => async (dispatch: any) => {
+  try {
+    await supabase
+      .from("expense_table_master")
+      .delete()
+      .in("id", params.id)
+      .then((res) => {
+        dispatch(fetchTransactions(params.user_id));
+      });
+  } catch (err: any) {
+    dispatch(error(err));
+  }
+};
+
 /* Selector */
 export const selectTransactions = (state: RootState) => state.transactions;
 
