@@ -43,7 +43,7 @@ const Navbar = () => {
   ];
 
   const pathName = usePathname();
-  const navMenuRef = useRef(null);
+  const navMenuRef:any = useRef(null);
 
   useEffect(() => {
     document.addEventListener("click", handleOutSideClick, true);
@@ -54,7 +54,7 @@ const Navbar = () => {
   }, [openCloseSideNav]);
 
   const handleOutSideClick = (e:Event) => {
-    if (!navMenuRef.current.contains(e.target)) {
+    if (navMenuRef.current && !navMenuRef.current.contains(e.target as Node)) {
       if (openCloseSideNav === true) {
         setOpenCloseSideNav(false);
       }
