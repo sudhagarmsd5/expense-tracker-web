@@ -53,7 +53,7 @@ const Navbar = () => {
     };
   }, [openCloseSideNav]);
 
-  const handleOutSideClick = (e) => {
+  const handleOutSideClick = (e:Event) => {
     if (!navMenuRef.current.contains(e.target)) {
       if (openCloseSideNav === true) {
         setOpenCloseSideNav(false);
