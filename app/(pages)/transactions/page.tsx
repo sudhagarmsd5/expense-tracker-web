@@ -2,11 +2,11 @@
 import { useZustandStore } from "@/app/lib/state/zustand";
 import { supabase } from "@/app/lib/supabase";
 import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { IoMdClose } from "react-icons/io";
+import { IoMdClose, IoIosSearch } from "react-icons/io";
 import useTransaction from "./useTransaction";
-import DataTable from "react-data-table-component";
+import DataTable, { Alignment } from "react-data-table-component";
 import { useAppDispatch, useAppSelector } from "@/app/lib/state/redux/store";
 import {
   deleteTransactions,
@@ -15,6 +15,8 @@ import {
 } from "@/app/lib/state/redux/reducer/transactions";
 import { ITransaction } from "@/app/lib/types";
 import { useIsGtMd } from "@/app/lib/hooks/useMediaQuery";
+import { MdEdit, MdOutlineAddBox } from "react-icons/md";
+import { RiDeleteBin6Line } from "react-icons/ri";
 
 const Transactions = () => {
   const dispatch = useAppDispatch();
@@ -35,7 +37,7 @@ const Transactions = () => {
   const [selectedData, setSelectedData] = React.useState<ITransaction[]>([]);
   const [toggledClearRows, setToggleClearRows] = React.useState(false);
   const [open, setOpen] = React.useState(false);
-  
+
   const {
     register,
     handleSubmit,
@@ -46,7 +48,7 @@ const Transactions = () => {
     setCategoryOptions,
     getValues,
     reset,
-  } = useTransaction({ dialogType, selectedData,setToggleClearRows,setOpen });
+  } = useTransaction({ dialogType, selectedData, setToggleClearRows, setOpen });
 
   useEffect(() => {
     supabase.auth.getSession().then((res) => {
@@ -79,7 +81,6 @@ const Transactions = () => {
     }, 50);
     setOpen(!open);
   }
-
 
   const handleChange = (state: any) => {
     setSelectedData(state.selectedRows);
@@ -279,11 +280,6 @@ const Transactions = () => {
       sortable: true,
     },
     {
-      name: "Category ID",
-      selector: (row: any) => row.category_id,
-      sortable: true,
-    },
-    {
       name: "Category Name",
       selector: (row: any) => row.category_name,
       sortable: true,
@@ -303,40 +299,125 @@ const Transactions = () => {
       selector: (row: any) => row.payment_mode,
       sortable: true,
     },
-    {
-      name: "User ID",
-      selector: (row: any) => row.user_id,
-      sortable: true,
-    },
   ];
   const isGtMd = useIsGtMd();
+
+  const [filterText, setFilterText] = React.useState("");
+  const [resetPaginationToggle, setResetPaginationToggle] =
+    React.useState(false);
+
+  const filteredItems = transactions.filter(
+    (item) =>
+      JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !==
+      -1
+  );
+
+  const subHeaderComponent = useMemo(() => {
+    const handleClear = () => {
+      if (filterText) {
+        setResetPaginationToggle(!resetPaginationToggle);
+        setFilterText("");
+      }
+    };
+
+    return (
+      <>
+        <div className="flex flex-col w-full">
+          <div className="">
+            <div className="expense-head-padding">
+              <div className="search-wrapper search-section flex items-center justify-between">
+                <div id="search">
+                  <span className="e-input-group e-control-wrapper w-full">
+                    <input
+                      id="txt"
+                      type="search"
+                      placeholder="Search"
+                      className="search e-input focus:outline-none w-full leading-7"
+                      value={filterText}
+                      onChange={(e) => setFilterText(e.target.value)}
+                    />
+                    <span
+                      className="e-clear-icon e-clear-icon-hide mr-2"
+                      aria-label="close"
+                      role="button"
+                      onClick={handleClear}
+                    ></span>
+                  </span>
+                  <span
+                    id="searchbtn"
+                    className="e-search-icon expense-search-icon e-icons "
+                  >
+                    <IoIosSearch />
+                  </span>
+                </div>
+                <div className="button-section search-section">
+                  <button
+                    id="addexpense"
+                    className="e-btn small e-info custom-btn hidden sm:block"
+                    onClick={openAddTransactionDialog}
+                  >
+                    Add Transaction
+                  </button>
+
+                  <button
+                    id="addexpensebtn"
+                    className="e-btn small e-info block sm:hidden"
+                    onClick={openAddTransactionDialog}
+                  >
+                    <MdOutlineAddBox className="text-2xl" />
+                  </button>
+
+                  <div id="add-btn" className="e-btn">
+                    <span className="e-icons add-icon add-head-item"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="mt-5 space-x-5 flex justify-end">
+            <button
+              disabled={selectedData?.length === 0 || selectedData?.length > 1}
+              onClick={openEditTransactionDialog}
+              className="custom-btn disabled:opacity-50"
+            >
+              <div className="flex justify-center items-center">
+                <MdEdit className="mr-1" /> Edit
+              </div>
+            </button>
+            <button
+              disabled={selectedData?.length === 0}
+              onClick={deleteTransaction}
+              className="custom-btn disabled:opacity-50"
+            >
+              <div className="flex justify-center items-center">
+                <RiDeleteBin6Line className="mr-1" /> Delete
+              </div>
+            </button>
+          </div>
+        </div>
+      </>
+    );
+  }, [filterText, resetPaginationToggle, selectedData]);
 
   return (
     <div className={isGtMd ? "ml-[200px]" : ""}>
       {open && dialog()}
-      <div className="space-x-5">
-        <button onClick={openAddTransactionDialog}>add transaction</button>
-        <button
-          disabled={selectedData?.length === 0 || selectedData?.length > 1}
-          onClick={openEditTransactionDialog}
-        >
-          edit transaction
-        </button>
-        <button
-          disabled={selectedData?.length === 0}
-          onClick={deleteTransaction}
-        >
-          delete transaction
-        </button>
+      <div className="p-1">
+        <p className="text-[#688496]">All Transactions</p>
+        {/* <div className="mt-2">{sectionOne()}</div> */}
+
+        <DataTable
+          columns={columns}
+          data={filteredItems}
+          selectableRows
+          onSelectedRowsChange={handleChange}
+          clearSelectedRows={toggledClearRows}
+          pagination
+          subHeader
+          subHeaderAlign={Alignment.LEFT}
+          subHeaderComponent={subHeaderComponent}
+        />
       </div>
-      <DataTable
-        columns={columns}
-        data={transactions}
-        selectableRows
-        onSelectedRowsChange={handleChange}
-        clearSelectedRows={toggledClearRows}
-        pagination
-      />
     </div>
   );
 };

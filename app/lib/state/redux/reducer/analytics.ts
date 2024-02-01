@@ -112,9 +112,10 @@ export const fetchOverallSummary =
 export const fetchExpenseSummary =
   (user_id: string) => async (dispatch: any) => {
     try {
+        // sql query fix to get based on user_id
       await supabase
         .rpc("get_expense_summary", {
-          user_id: user_id,
+          _user_id: user_id,
         })
         .then((res) => {
           dispatch(success({ expense_summary: res.data }));
@@ -127,9 +128,10 @@ export const fetchExpenseSummary =
 export const fetchRecentTransactions =
   (user_id: string) => async (dispatch: any) => {
     try {
+      // sql query fix to get based on user_id
       await supabase
         .rpc("get_recent_transactions", {
-          user_id: user_id,
+          _user_id: user_id,
         })
         .then((res) => {
           dispatch(success({ recent_transactions: res.data }));
