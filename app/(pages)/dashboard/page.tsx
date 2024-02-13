@@ -123,14 +123,14 @@ const Dashboard = () => {
   ];
 
   const recentTransactions = () => {
-    return <DataTable columns={columns} data={recent_transactions} />;
+    return <DataTable className="shadow-md" columns={columns} data={recent_transactions} />;
   };
   const isGtMd = useIsGtMd();
 
   const sectionOne = () => {
     return (
       <>
-        <div className="cards pt-2">
+        <div className="cards pt-4 shadow-sm">
           <div className="px-2 grid grid-cols-2 md:grid-cols-4 gap-4">
             <div
               className="py-5 px-5 rounded-md"
@@ -180,7 +180,7 @@ const Dashboard = () => {
 
   const sectionTwo = () => {
     return (
-      <div className="expenses-analysis">
+      <div className="expenses-analysis shadow-md pt-2">
         <div className="flex flex-col md:flex-row p-1">
           <div className="doughnut">
             <p className="text-base text-gray-700 font-poppins font-semibold">
@@ -188,7 +188,7 @@ const Dashboard = () => {
             </p>
 
             <div className="flex flex-col md:flex-row px-2 md:px-5 items-center">
-              <div className=" flex justify-center mt-5 h-[calc(100vh/4)] md:h-[calc(100vh/2)] w-[calc(100vw/2)]">
+              <div className=" flex justify-center mt-2 h-[calc(100vh/4)] md:h-[calc(100vh/2)] w-[calc(100vw/2)]">
                 {chartData.datasets[0].data.every(
                   (element) => element === "0"
                 ) ? (
@@ -242,7 +242,7 @@ const Dashboard = () => {
 
   return (
     <div className={isGtMd ? "ml-[200px]" : ""}>
-      <div>
+      <div className="p-2">
         {sectionOne()}
         {sectionTwo()}
         {recentTransactions()}

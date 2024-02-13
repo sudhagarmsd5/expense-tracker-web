@@ -17,6 +17,7 @@ import { ITransaction } from "@/app/lib/types";
 import { useIsGtMd } from "@/app/lib/hooks/useMediaQuery";
 import { MdEdit, MdOutlineAddBox } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { convertTo12HourTime } from "@/app/lib/utils/helpers";
 
 const Transactions = () => {
   const dispatch = useAppDispatch();
@@ -276,7 +277,7 @@ const Transactions = () => {
     },
     {
       name: "Time",
-      selector: (row: any) => row.time,
+      selector: (row: any) => convertTo12HourTime(row.time),
       sortable: true,
     },
     {
@@ -402,7 +403,7 @@ const Transactions = () => {
   return (
     <div className={isGtMd ? "ml-[200px]" : ""}>
       {open && dialog()}
-      <div className="p-1">
+      <div className="p-4">
         <p className="text-[#688496]">All Transactions</p>
         {/* <div className="mt-2">{sectionOne()}</div> */}
 
