@@ -12,7 +12,7 @@ export default function MainLayout({
   const isGtMd = useIsGtMd();
 
   return (
-    <main>
+    <main className="bg-gray-200 h-full">
       <ReduxProvider>
         {isLtMd === true ? <Navbar /> : <></>}
         {isGtMd === true ? <SideBar /> : <></>}

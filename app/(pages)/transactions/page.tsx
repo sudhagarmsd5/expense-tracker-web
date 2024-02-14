@@ -31,9 +31,6 @@ const Transactions = () => {
     }
   }, [userSession]);
 
-  useEffect(() => {
-    console.log(transactions);
-  }, [transactions]);
   const [dialogType, setDialogType] = React.useState<number>();
   const [selectedData, setSelectedData] = React.useState<ITransaction[]>([]);
   const [toggledClearRows, setToggleClearRows] = React.useState(false);
@@ -43,11 +40,8 @@ const Transactions = () => {
     register,
     handleSubmit,
     setValue,
-    watch,
     onSubmit,
     categoryOptions,
-    setCategoryOptions,
-    getValues,
     reset,
   } = useTransaction({ dialogType, selectedData, setToggleClearRows, setOpen });
 
@@ -93,36 +87,32 @@ const Transactions = () => {
     dispatch(deleteTransactions(params));
   };
 
-  useEffect(() => {
-    console.log(selectedData);
-  }, [selectedData]);
-
   const TransactionForm = () => {
     return (
       <form onSubmit={handleSubmit(onSubmit)} className="py-2 space-y-5">
+        {/* Radio buttons for transaction type */}
         <div className="flex space-x-15">
           <div>
             <input
-              {...register("transaction_type", {
-                required: true,
-              })}
+              {...register("transaction_type", { required: true })}
               type="radio"
               value="income"
+              className="border border-gray-300 rounded-md p-1"
             />
             <label> Income</label>
           </div>
           <div>
             <input
-              {...register("transaction_type", {
-                required: true,
-              })}
+              {...register("transaction_type", { required: true })}
               type="radio"
               value="expense"
+              className="border border-gray-300 rounded-md p-1"
             />
             <label> Expense</label>
           </div>
         </div>
 
+        {/* Date and time inputs */}
         <div className="flex flex-wrap lg:space-x-5">
           <div>
             <p>Choose a Date</p>
@@ -130,6 +120,7 @@ const Transactions = () => {
               type="date"
               placeholder="transactionDate"
               {...register("date", { required: true })}
+              className="border border-gray-300 rounded-md p-1"
             />
           </div>
           <div>
@@ -138,18 +129,18 @@ const Transactions = () => {
               type="time"
               placeholder="transactionTime"
               {...register("time", { required: true })}
+              className="border border-gray-300 rounded-md p-1"
             />
           </div>
         </div>
 
+        {/* Category select and amount input */}
         <div className="flex flex-wrap lg:space-x-5">
           <div className="w-40">
             <p>Select a Category</p>
             <select
-              className={"w-full"}
-              {...register("transactionCategory", {
-                required: true,
-              })}
+              className={"w-full border border-gray-300 rounded-md p-1"}
+              {...register("transactionCategory", { required: true })}
             >
               {categoryOptions?.map((e: any, index: number) => (
                 <option key={index} value={JSON.stringify(e)}>
@@ -159,25 +150,28 @@ const Transactions = () => {
             </select>
           </div>
           <div>
-            <p>Enter a Amount</p>
+            <p>Enter an Amount</p>
             <input
               type="number"
               placeholder="transactionAmount"
               {...register("amount", { required: true })}
+              className="border border-gray-300 rounded-md p-1"
             />
           </div>
         </div>
 
+        {/* Description input */}
         <div>
-          <p>Descriptions</p>
+          <p>Description</p>
           <input
-            className="w-full"
+            className="w-full border border-gray-300 rounded-md p-1"
             type="text"
             placeholder="description"
             {...register("description", { required: true })}
           />
         </div>
 
+        {/* Payment mode radio buttons */}
         <div className={"w-[300px] "}>
           <p>Payment Mode</p>
           <div>
@@ -185,16 +179,20 @@ const Transactions = () => {
               {...register("payment_mode", { required: true })}
               type="radio"
               value="cash"
+              className="border border-gray-300 rounded-md p-1"
             />
             <label> Cash</label>
-
+            {/* Similarly style other radio buttons */}
+          </div>
+          <div>
             <input
-              className={"ml-2"}
               {...register("payment_mode", { required: true })}
               type="radio"
               value="debitCard"
+              id="debitCard"
+              className="mr-2 cursor-pointer"
             />
-            <label> Debit Card</label>
+            <label htmlFor="debitCard"> Debit Card</label>
           </div>
 
           <div>
@@ -202,25 +200,31 @@ const Transactions = () => {
               {...register("payment_mode", { required: true })}
               type="radio"
               value="creditCard"
+              id="creditCard"
+              className="mr-2 cursor-pointer"
             />
-            <label> Credit Card</label>
+            <label htmlFor="creditCard"> Credit Card</label>
+          </div>
 
+          <div>
             <input
-              className={"ml-2"}
               {...register("payment_mode", { required: true })}
               type="radio"
               value="onlinePayment"
+              id="onlinePayment"
+              className="mr-2 cursor-pointer"
             />
-            <label>Online Payment</label>
+            <label htmlFor="onlinePayment">Online Payment</label>
           </div>
+
         </div>
-        <button type="submit">{dialogType === 0 ? "Add" : "Update"}</button>
+        <button type="submit" className="border border-gray-300 rounded-md py-2 px-4 bg-blue-500 text-white">{dialogType === 0 ? "Add" : "Update"}</button>
       </form>
     );
   };
 
+
   const closedialog = () => {
-    console.log("dialog");
     if (open) {
       reset();
     }
@@ -301,6 +305,7 @@ const Transactions = () => {
       sortable: true,
     },
   ];
+
   const isGtMd = useIsGtMd();
 
   const [filterText, setFilterText] = React.useState("");
@@ -313,7 +318,37 @@ const Transactions = () => {
       -1
   );
 
-  const subHeaderComponent = useMemo(() => {
+  const subHeaderComponent = () => {
+
+    return (
+      <>
+        <div className="flex flex-col w-full">
+          <div className="space-x-5 flex justify-end">
+            <button
+              disabled={selectedData?.length === 0 || selectedData?.length > 1}
+              onClick={openEditTransactionDialog}
+              className="disabled:opacity-50"
+            >
+              <div className="flex justify-center items-center">
+                <MdEdit className="mr-1" /> Edit
+              </div>
+            </button>
+            <button
+              disabled={selectedData?.length === 0}
+              onClick={deleteTransaction}
+              className="disabled:opacity-50"
+            >
+              <div className="flex justify-center items-center">
+                <RiDeleteBin6Line className="mr-1" /> Delete
+              </div>
+            </button>
+          </div>
+        </div>
+      </>
+    )
+  }
+
+  const searchFilter = useMemo(() => {
     const handleClear = () => {
       if (filterText) {
         setResetPaginationToggle(!resetPaginationToggle);
@@ -323,89 +358,71 @@ const Transactions = () => {
 
     return (
       <>
-        <div className="flex flex-col w-full">
-          <div className="">
-            <div className="expense-head-padding">
-              <div className="search-wrapper search-section flex items-center justify-between">
-                <div id="search">
-                  <span className="e-input-group e-control-wrapper w-full">
-                    <input
-                      id="txt"
-                      type="search"
-                      placeholder="Search"
-                      className="search e-input focus:outline-none w-full leading-7"
-                      value={filterText}
-                      onChange={(e) => setFilterText(e.target.value)}
-                    />
-                    <span
-                      className="e-clear-icon e-clear-icon-hide mr-2"
-                      aria-label="close"
-                      role="button"
-                      onClick={handleClear}
-                    ></span>
-                  </span>
+        <div className="mb-6">
+          <div className="expense-head-padding">
+            <div className="search-wrapper search-section flex items-center justify-between">
+              <div id="search">
+                <span className="e-input-group e-control-wrapper w-full">
+                  <input
+                    id="txt"
+                    type="search"
+                    placeholder="Search"
+                    className="search e-input focus:outline-none w-full leading-7"
+                    value={filterText}
+                    onChange={(e) => setFilterText(e.target.value)}
+                  />
                   <span
-                    id="searchbtn"
-                    className="e-search-icon expense-search-icon e-icons "
-                  >
-                    <IoIosSearch />
-                  </span>
-                </div>
-                <div className="button-section search-section">
-                  <button
-                    id="addexpense"
-                    className="e-btn small e-info custom-btn hidden sm:block"
-                    onClick={openAddTransactionDialog}
-                  >
-                    Add Transaction
-                  </button>
+                    className="e-clear-icon e-clear-icon-hide mr-2"
+                    aria-label="close"
+                    role="button"
+                    onClick={handleClear}
+                  ></span>
+                </span>
+                <span
+                  id="searchbtn"
+                  className="e-search-icon expense-search-icon e-icons "
+                >
+                  <IoIosSearch />
+                </span>
+              </div>
+              <div className="button-section search-section">
+                <button
+                  id="addexpense"
+                  className="e-btn small e-info custom-btn hidden sm:block"
+                  onClick={openAddTransactionDialog}
+                >
+                  Add
+                </button>
 
-                  <button
-                    id="addexpensebtn"
-                    className="e-btn small e-info block sm:hidden"
-                    onClick={openAddTransactionDialog}
-                  >
-                    <MdOutlineAddBox className="text-2xl" />
-                  </button>
+                <button
+                  id="addexpensebtn"
+                  className="e-btn small e-info block sm:hidden"
+                  onClick={openAddTransactionDialog}
+                >
+                  <MdOutlineAddBox className="text-2xl" />
+                </button>
 
-                  <div id="add-btn" className="e-btn">
-                    <span className="e-icons add-icon add-head-item"></span>
-                  </div>
+                <div id="add-btn" className="e-btn">
+                  <span className="e-icons add-icon add-head-item"></span>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="mt-5 space-x-5 flex justify-end">
-            <button
-              disabled={selectedData?.length === 0 || selectedData?.length > 1}
-              onClick={openEditTransactionDialog}
-              className="custom-btn disabled:opacity-50"
-            >
-              <div className="flex justify-center items-center">
-                <MdEdit className="mr-1" /> Edit
-              </div>
-            </button>
-            <button
-              disabled={selectedData?.length === 0}
-              onClick={deleteTransaction}
-              className="custom-btn disabled:opacity-50"
-            >
-              <div className="flex justify-center items-center">
-                <RiDeleteBin6Line className="mr-1" /> Delete
-              </div>
-            </button>
           </div>
         </div>
       </>
     );
   }, [filterText, resetPaginationToggle, selectedData]);
 
+
+
   return (
-    <div className={isGtMd ? "ml-[200px]" : ""}>
+    <div className={isGtMd ? "ml-[200px] " : ""}>
       {open && dialog()}
-      <div className="p-4">
+      <div className="p-4 ">
         <p className="text-[#688496]">All Transactions</p>
         {/* <div className="mt-2">{sectionOne()}</div> */}
+
+        {searchFilter}
 
         <DataTable
           columns={columns}
@@ -416,7 +433,7 @@ const Transactions = () => {
           pagination
           subHeader
           subHeaderAlign={Alignment.LEFT}
-          subHeaderComponent={subHeaderComponent}
+          subHeaderComponent={subHeaderComponent()}
         />
       </div>
     </div>

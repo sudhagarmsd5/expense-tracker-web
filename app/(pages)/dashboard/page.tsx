@@ -123,17 +123,17 @@ const Dashboard = () => {
   ];
 
   const recentTransactions = () => {
-    return <DataTable className="shadow-md" columns={columns} data={recent_transactions} />;
+    return <DataTable className="shadow-custom rounded-md" columns={columns} data={recent_transactions} />;
   };
   const isGtMd = useIsGtMd();
 
   const sectionOne = () => {
     return (
       <>
-        <div className="cards pt-4 shadow-sm">
+        <div className="cards pt-4">
           <div className="px-2 grid grid-cols-2 md:grid-cols-4 gap-4">
             <div
-              className="py-5 px-5 rounded-md"
+              className="py-5 px-5 rounded-md bg-white"
               style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 2px 4px 0.5px" }}
             >
               <div className="text-[#4d80f3] text-center">
@@ -153,7 +153,7 @@ const Dashboard = () => {
               <div className="py-1 text-gray-600 text-center">Expenses</div>
             </div>
             <div
-              className="py-5 rounded-md"
+              className="py-5 rounded-md bg-white"
               style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 2px 4px 0.5px" }}
             >
               <div className="text-[#81c868]  text-center">
@@ -163,7 +163,7 @@ const Dashboard = () => {
               <div className="py-1 text-gray-600 text-center">Balance</div>
             </div>
             <div
-              className="py-5 rounded-md"
+              className="py-5 rounded-md bg-white"
               style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 2px 4px 0.5px" }}
             >
               <div className="text-[#34d3eb]  text-center">
@@ -180,7 +180,7 @@ const Dashboard = () => {
 
   const sectionTwo = () => {
     return (
-      <div className="expenses-analysis shadow-md pt-2">
+      <div className="expenses-analysis shadow-custom pt-2 rounded-md bg-white">
         <div className="flex flex-col md:flex-row p-1">
           <div className="doughnut">
             <p className="text-base text-gray-700 font-poppins font-semibold">
@@ -188,7 +188,7 @@ const Dashboard = () => {
             </p>
 
             <div className="flex flex-col md:flex-row px-2 md:px-5 items-center">
-              <div className=" flex justify-center mt-2 h-[calc(100vh/4)] md:h-[calc(100vh/2)] w-[calc(100vw/2)]">
+              <div className=" flex justify-center mt-2 h-[200px] md:h-[300px] w-full">
                 {chartData.datasets[0].data.every(
                   (element) => element === "0"
                 ) ? (
@@ -199,7 +199,7 @@ const Dashboard = () => {
                   <Doughnut data={chartData} options={options} />
                 )}
               </div>
-              <div className="w-full md:w-3/4 doughnut-details mt-2 md:mt-10 px-2 md:px-5 flex justify-center items-center">
+              <div className="w-full doughnut-details px-2 md:px-5 flex justify-center items-center">
                 <table className="e-table m" cellSpacing="0.25px">
                   <colgroup>
                     <col style={{ width: "10%" }} />
@@ -241,8 +241,8 @@ const Dashboard = () => {
   };
 
   return (
-    <div className={isGtMd ? "ml-[200px]" : ""}>
-      <div className="p-2">
+    <div className={isGtMd ? "ml-[200px] bg-gray-200" : "bg-gray-200"}>
+      <div className="p-2 space-y-5">
         {sectionOne()}
         {sectionTwo()}
         {recentTransactions()}
