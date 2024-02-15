@@ -4,7 +4,7 @@ export function categories() {
       { category_id: 1, category_name: "Salary" },
       { category_id: 2, category_name: "Interests" },
       { category_id: 3, category_name: "Business" },
-      { category_id: 4, category_name: "Extra income" },
+      { category_id: 4, category_name: "Extra income" }
     ],
     expense: [
       { category_id: 5, category_name: "Mortgage / Rent" },
@@ -21,11 +21,33 @@ export function categories() {
       { category_id: 16, category_name: "Clothing" },
       { category_id: 17, category_name: "Education" },
       { category_id: 18, category_name: "Miscellaneous" },
-      { category_id: 19, category_name: "Personal Care" },
-    ],
+      { category_id: 19, category_name: "Personal Care" }
+    ]
   };
   return category;
 }
+
+export const categoryImages = [
+  { category_id: 1, category_img: "/images/category/salary.png" },
+  { category_id: 2, category_img: "/images/category/interest.png" },
+  { category_id: 3, category_img: "/images/category/business.png" },
+  { category_id: 4, category_img: "/images/category/extra.png" },
+  { category_id: 5, category_img: "/images/category/rent.png" },
+  { category_id: 6, category_img: "/images/category/food.png" },
+  { category_id: 7, category_img: "/images/category/bills.png" },
+  { category_id: 8, category_img: "/images/category/utilities.png" },
+  { category_id: 9, category_img: "/images/category/transport.png" },
+  { category_id: 10, category_img: "/images/category/insurance.png" },
+  { category_id: 11, category_img: "/images/category/shopping.png" },
+  { category_id: 12, category_img: "/images/category/entertainment.png" },
+  { category_id: 13, category_img: "/images/category/health.png" },
+  { category_id: 14, category_img: "/images/category/house.png" },
+  { category_id: 15, category_img: "/images/category/tax.png" },
+  { category_id: 16, category_img: "/images/category/clothing.png" },
+  { category_id: 17, category_img: "/images/category/education.png" },
+  { category_id: 18, category_img: "/images/category/miscellaneous.png" },
+  { category_id: 19, category_img: "/images/category/personal.png" }
+]
 
 export const COLORS = {
   white: "#ffffff",
@@ -50,5 +72,5 @@ export const COLORS = {
   purpleAlpha: "rgba(124, 58, 237, 0.5)",
   yellowAlpha: "rgba(245, 158, 11, 0.5)",
   purple_logo: "#5850FF",
-  violet_600: "#8B5CF6",
+  violet_600: "#8B5CF6"
 };

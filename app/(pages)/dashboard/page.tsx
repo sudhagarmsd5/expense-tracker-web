@@ -12,9 +12,10 @@ import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import DataTable from "react-data-table-component";
+import DataTable, { Alignment } from "react-data-table-component";
 import { useIsGtMd } from "@/app/lib/hooks/useMediaQuery";
 import { numberWithCommas } from "@/app/lib/utils/helpers";
+import { categoryImages } from "@/app/lib/utils/data";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Dashboard = () => {
@@ -98,7 +99,16 @@ const Dashboard = () => {
       },
     },
   };
-  
+
+  const filterCategoryImg = (row:any)=>{
+    let data = categoryImages.find((obj)=> obj.category_id === row.category_id);    
+    return <> 
+    <div className="flex justify-center items-center">
+    <img src={data?.category_img} className="mr-2 h-5 w-5" /> {row.category_name} 
+    </div>
+    </> 
+  }
+
   const columns = [
     {
       name: "Date",
@@ -107,7 +117,7 @@ const Dashboard = () => {
     },
     {
       name: "Category",
-      selector: (row: any) => row.category_name,
+      selector: (row:any)=>filterCategoryImg(row),
       sortable: true,
     },
     {
@@ -122,21 +132,33 @@ const Dashboard = () => {
     },
   ];
 
+  const subHeaderComponent = () => {
+
+    return (
+      <>
+        <div className="text-base text-gray-700 font-poppins font-semibold">
+          Recent Transactions
+        </div>
+      </>
+    )
+  }
+
   const recentTransactions = () => {
-    return <DataTable className="shadow-custom rounded-md" columns={columns} data={recent_transactions} />;
+    return <DataTable className="shadow-custom rounded-md" columns={columns} data={recent_transactions} subHeader
+      subHeaderComponent={subHeaderComponent()}     subHeaderAlign={Alignment.LEFT} />;
   };
   const isGtMd = useIsGtMd();
 
   const sectionOne = () => {
     return (
       <>
-        <div className="cards pt-4">
+        <div className="cards">
           <div className="px-2 grid grid-cols-2 md:grid-cols-4 gap-4">
             <div
               className="py-5 px-5 rounded-md bg-white"
               style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 2px 4px 0.5px" }}
             >
-              <div className="text-[#4d80f3] text-center">
+              <div className="text-[#4d80f3] text-center text-xl font-medium">
                 ₹{numberWithCommas(analytics[0].total_income)}
               </div>
 
@@ -146,7 +168,7 @@ const Dashboard = () => {
               className="py-5 rounded-md bg-white"
               style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 2px 4px 0.5px" }}
             >
-              <div className="text-[#fb6d9d]  text-center">
+              <div className="text-[#fb6d9d] text-center text-xl font-medium">
                 ₹{numberWithCommas(analytics[0].total_expenses)}
               </div>
 
@@ -156,7 +178,7 @@ const Dashboard = () => {
               className="py-5 rounded-md bg-white"
               style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 2px 4px 0.5px" }}
             >
-              <div className="text-[#81c868]  text-center">
+              <div className="text-[#81c868] text-center text-xl font-medium">
                 ₹{numberWithCommas(analytics[0].balance)}
               </div>
 
@@ -166,7 +188,7 @@ const Dashboard = () => {
               className="py-5 rounded-md bg-white"
               style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 2px 4px 0.5px" }}
             >
-              <div className="text-[#34d3eb]  text-center">
+              <div className="text-[#34d3eb] text-center text-xl font-medium">
                 {numberWithCommas(analytics[0].total_transactions)}
               </div>
 
@@ -178,12 +200,13 @@ const Dashboard = () => {
     );
   };
 
+
   const sectionTwo = () => {
     return (
-      <div className="expenses-analysis shadow-custom pt-2 rounded-md bg-white">
+      <div className="expenses-analysis shadow-custom rounded-md bg-white pt-2">
         <div className="flex flex-col md:flex-row p-1">
           <div className="doughnut">
-            <p className="text-base text-gray-700 font-poppins font-semibold">
+            <p className="text-base ml-4 text-gray-700 font-poppins font-semibold">
               Total Expenses
             </p>
 
@@ -242,9 +265,13 @@ const Dashboard = () => {
 
   return (
     <div className={isGtMd ? "ml-[200px] bg-gray-200" : "bg-gray-200"}>
-      <div className="p-2 space-y-5">
+      <div className="p-2">
+       <div className="pt-5 md:pt-1">
         {sectionOne()}
+       </div>
+       <div className="py-5">
         {sectionTwo()}
+        </div>
         {recentTransactions()}
       </div>
     </div>

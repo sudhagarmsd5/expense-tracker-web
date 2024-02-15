@@ -18,6 +18,7 @@ import { useIsGtMd } from "@/app/lib/hooks/useMediaQuery";
 import { MdEdit, MdOutlineAddBox } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { convertTo12HourTime } from "@/app/lib/utils/helpers";
+import { categoryImages } from "@/app/lib/utils/data";
 
 const Transactions = () => {
   const dispatch = useAppDispatch();
@@ -89,57 +90,57 @@ const Transactions = () => {
 
   const TransactionForm = () => {
     return (
-      <form onSubmit={handleSubmit(onSubmit)} className="py-2 space-y-5">
+      <form onSubmit={handleSubmit(onSubmit)} className="">
         {/* Radio buttons for transaction type */}
-        <div className="flex space-x-15">
-          <div>
+        <div className="h-5 mt-2">
+          <div className="w-1/2 float-left">
             <input
               {...register("transaction_type", { required: true })}
               type="radio"
               value="income"
-              className="border border-gray-300 rounded-md p-1"
+              className="mr-2 cursor-pointer"
             />
             <label> Income</label>
           </div>
-          <div>
+          <div className="w-1/2 float-left">
             <input
               {...register("transaction_type", { required: true })}
               type="radio"
               value="expense"
-              className="border border-gray-300 rounded-md p-1"
+              className="mr-2 cursor-pointer"
             />
             <label> Expense</label>
           </div>
         </div>
 
         {/* Date and time inputs */}
-        <div className="flex flex-wrap lg:space-x-5">
-          <div>
+        <div className="h-12 mt-7">
+          <div className="w-1/2 float-left">
             <p>Choose a Date</p>
             <input
               type="date"
-              placeholder="transactionDate"
+              placeholder="Select Date"
               {...register("date", { required: true })}
-              className="border border-gray-300 rounded-md p-1"
+              className="border border-gray-300 rounded-md p-1 w-[95%]"
             />
           </div>
-          <div>
+          <div className="w-1/2 float-right">
             <p>Choose a Time</p>
             <input
               type="time"
-              placeholder="transactionTime"
+              placeholder="Select Time"
               {...register("time", { required: true })}
-              className="border border-gray-300 rounded-md p-1"
+              className="border border-gray-300 rounded-md p-1 w-[95%]"
             />
           </div>
         </div>
 
         {/* Category select and amount input */}
-        <div className="flex flex-wrap lg:space-x-5">
-          <div className="w-40">
+        <div className="h-16 mt-10">
+          <div className="w-1/2 float-left">
             <p>Select a Category</p>
             <select
-              className={"w-full border border-gray-300 rounded-md p-1"}
+              className={" border border-gray-300 rounded-md p-1 w-[95%]"}
               {...register("transactionCategory", { required: true })}
             >
               {categoryOptions?.map((e: any, index: number) => (
@@ -149,76 +150,80 @@ const Transactions = () => {
               ))}
             </select>
           </div>
-          <div>
+          <div className="w-1/2 float-right">
             <p>Enter an Amount</p>
             <input
               type="number"
-              placeholder="transactionAmount"
+              placeholder="Enter Amount"
               {...register("amount", { required: true })}
-              className="border border-gray-300 rounded-md p-1"
+              className="border border-gray-300 rounded-md p-1 w-[95%]"
             />
           </div>
         </div>
 
         {/* Description input */}
-        <div>
+        <div className="h-12 mt-3">
           <p>Description</p>
-          <input
+          <textarea
             className="w-full border border-gray-300 rounded-md p-1"
-            type="text"
-            placeholder="description"
+            placeholder="Enter Description"
             {...register("description", { required: true })}
           />
         </div>
 
         {/* Payment mode radio buttons */}
-        <div className={"w-[300px] "}>
+        <div className={"mt-10 h-auto "}>
           <p>Payment Mode</p>
-          <div>
-            <input
-              {...register("payment_mode", { required: true })}
-              type="radio"
-              value="cash"
-              className="border border-gray-300 rounded-md p-1"
-            />
-            <label> Cash</label>
-            {/* Similarly style other radio buttons */}
-          </div>
-          <div>
-            <input
-              {...register("payment_mode", { required: true })}
-              type="radio"
-              value="debitCard"
-              id="debitCard"
-              className="mr-2 cursor-pointer"
-            />
-            <label htmlFor="debitCard"> Debit Card</label>
-          </div>
 
-          <div>
-            <input
-              {...register("payment_mode", { required: true })}
-              type="radio"
-              value="creditCard"
-              id="creditCard"
-              className="mr-2 cursor-pointer"
-            />
-            <label htmlFor="creditCard"> Credit Card</label>
-          </div>
-
-          <div>
-            <input
-              {...register("payment_mode", { required: true })}
-              type="radio"
-              value="onlinePayment"
-              id="onlinePayment"
-              className="mr-2 cursor-pointer"
-            />
-            <label htmlFor="onlinePayment">Online Payment</label>
+          <div className="mt-1">
+            <div className="w-[50%] float-left min-w-[80px]">
+              <input
+                {...register("payment_mode", { required: true })}
+                type="radio"
+                value="cash"
+                className="mr-2 cursor-pointer"
+              />
+              <label> Cash</label>
+              {/* Similarly style other radio buttons */}
+            </div>
+            <div className="w-[50%] float-left min-w-[80px]">
+              <input
+                {...register("payment_mode", { required: true })}
+                type="radio"
+                value="debitCard"
+                id="debitCard"
+                className="mr-2 cursor-pointer"
+              />
+              <label htmlFor="debitCard"> Debit Card</label>
+            </div>
+            <div className="w-[50%] float-left min-w-[80px]">
+              <input
+                {...register("payment_mode", { required: true })}
+                type="radio"
+                value="creditCard"
+                id="creditCard"
+                className="mr-2 cursor-pointer"
+              />
+              <label htmlFor="creditCard"> Credit Card</label>
+            </div>
+            <div className="w-[50%] float-left min-w-[80px]">
+              <input
+                {...register("payment_mode", { required: true })}
+                type="radio"
+                value="onlinePayment"
+                id="onlinePayment"
+                className="mr-2 cursor-pointer "
+              />
+              <label htmlFor="onlinePayment">Online Payment</label>
+            </div>
           </div>
 
         </div>
-        <button type="submit" className="border border-gray-300 rounded-md py-2 px-4 bg-blue-500 text-white">{dialogType === 0 ? "Add" : "Update"}</button>
+
+        <div className="text-right ">
+        <button type="submit" className="mt-2 border border-gray-300 rounded-sm py-1 px-3 blue-btn text-white">{dialogType === 0 ? "Add" : "Update"}</button>
+        <button onClick={()=>{ setOpen(!open);closedialog()}} className="mt-2 ml-2 border border-[#4273f9] rounded-sm py-1 px-3 text-[#4273f9] hover:text-white blue-btn-hover">Cancel</button>
+        </div>
       </form>
     );
   };
@@ -243,15 +248,15 @@ const Transactions = () => {
           <Dialog.Overlay className="bg-blackA6 data-[state=open]:animate-overlayShow fixed inset-0" />
           <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
             <Dialog.Title className="text-mauve12 m-0 text-[17px] font-medium">
-              {dialogType === 0 ? "Add" : "Update"}
+              {dialogType === 0 ? "Add" : "Update"} {" "}
               Transaction
             </Dialog.Title>
             <Dialog.Close asChild>
               <button
-                className="text-violet11 hover:bg-violet4 focus:shadow-violet7 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none"
+                className=" absolute top-[10px] right-[10px] inline-flex h-[30px] w-[30px] appearance-none items-center justify-center rounded-full"
                 aria-label="Close"
               >
-                <IoMdClose />
+                <IoMdClose  className="w-5 h-5 text-gray-400"/>
               </button>
             </Dialog.Close>
             {TransactionForm()}
@@ -268,41 +273,59 @@ const Transactions = () => {
     );
   };
 
+  const filterCategoryImg = (row:any)=>{
+    let data = categoryImages.find((obj)=> obj.category_id === row.category_id);    
+    return <> 
+    <div className="flex justify-center items-center">
+    <img src={data?.category_img} className="h-5 w-5" /> <span className="ml-3">{row.category_name}</span> 
+    </div>
+    </> 
+  }
+
   const columns = [
     {
       name: "Transaction Type",
       selector: (row: any) => row.transaction_type,
       sortable: true,
+      width:"150px"
     },
     {
       name: "Date",
       selector: (row: any) => row.date,
       sortable: true,
+      width:"130px"
+
     },
     {
       name: "Time",
       selector: (row: any) => convertTo12HourTime(row.time),
       sortable: true,
+      width:"150px"
     },
     {
       name: "Category Name",
-      selector: (row: any) => row.category_name,
+      selector: (row:any)=>filterCategoryImg(row),
       sortable: true,
+      width:"200px"
     },
     {
       name: "Amount",
       selector: (row: any) => row.amount,
       sortable: true,
+      width:"150px"
     },
     {
       name: "Description",
       selector: (row: any) => row.description,
       sortable: true,
+      width:"220px"
     },
     {
       name: "Payment Mode",
       selector: (row: any) => row.payment_mode,
       sortable: true,
+      width:"150px"
+
     },
   ];
 
@@ -419,7 +442,9 @@ const Transactions = () => {
     <div className={isGtMd ? "ml-[200px] " : ""}>
       {open && dialog()}
       <div className="p-4 ">
-        <p className="text-[#688496]">All Transactions</p>
+      <p className="text-base mb-2 ml-1 text-gray-700 font-poppins font-semibold">
+      All Transactions
+            </p>
         {/* <div className="mt-2">{sectionOne()}</div> */}
 
         {searchFilter}
@@ -441,3 +466,4 @@ const Transactions = () => {
 };
 
 export default Transactions;
+

@@ -165,4 +165,45 @@ input#txt {
   box-shadow: 0 0 #0000, 0 0 #0000, 0 0 10px 1px rgba(0, 0, 0, 0.05);
 }
 
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  height: 20px;
+  width: 20px;
+  margin-left: .4em;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23777'><path d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/></svg>");
+  cursor: pointer;
+}
 
+
+input[type='radio'] {
+  -webkit-appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  outline: none;
+  box-shadow: 0 0 0 2px gray;
+}
+
+input[type='radio']:checked {
+  box-shadow: 0 0 0 2px #4273f9;
+}
+
+input[type='radio']:before {
+  content: '';
+  display: block;
+  width: 60%;
+  height: 60%;
+  margin: 20% auto;
+  border-radius: 50%;
+}
+
+input[type='radio']:checked:before {
+  background: #4273f9;
+}
+
+.blue-btn {
+  background-image: linear-gradient(-180deg, #6890FB 0%, #4273F9 100%) !important;
+}
+.blue-btn-hover:hover {
+  background-image: linear-gradient(-180deg, #6890FB 0%, #4273F9 100%) !important;
+}
